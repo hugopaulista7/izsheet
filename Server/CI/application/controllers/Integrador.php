@@ -11,6 +11,7 @@ class Usuario extends CI_Controller {
         $dadosRecebidos  = $this->ResolverHttp();
         switch ($dadosRecebidos->metodo) {
             case 'usuario/Logar':
+            
                 break;
         }
     }
