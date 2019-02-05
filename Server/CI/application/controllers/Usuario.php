@@ -14,4 +14,8 @@ class Usuario extends CI_Controller {
         $retornodb = $this->db->get("core_sistema")->result();
         var_dump($retornodb);
     }
+
+    public function Login() {
+        
+    }
 }
