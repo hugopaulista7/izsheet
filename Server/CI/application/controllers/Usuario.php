@@ -9,14 +9,39 @@ class Usuario extends CI_Controller {
 
     public function api() {
         $dadosRecebidos  = $this->ResolverHttp();
+
         $retorno = [];
-        $retorno['data'] = date("Y-m-d H:m:s");
-        switch ($dadosRecebidos->metodo) {
-            case 'Logar':
-            $retorno = $this->Login($dadosRecebidos);
-            break;
-        
+
+        if (empty($dadosRecebidos->metodo)) {
+            $retorno['erro']     = 'Parametros invalidos, sem identificação do metodo destino';
+            $retorno['mensagem'] = 'Parametros invalidos, sem identificação do metodo destino';
+        } else {
+            
+            try {
+                switch ($dadosRecebidos->metodo) {
+                    case 'Logar':
+                    $retorno = $this->Login($dadosRecebidos);
+                    break;
+                    
+                    case 'Cadastrar':
+                    $retorno = $this->Cadastrar($dadosRecebidos);
+                    break;
+    
+                    default:
+                        $retorno['sucesso']  = false;
+                        $retorno['erro']     = 'Parametros invalidos, metodo de destino não encontrado';
+                        $retorno['mensagem'] = 'Parametros invalidos, metodo de destino não encontrado';
+                        break;
+                    
+                }
+            } catch (Exception $exception) {
+                $retorno['sucsso'] = false;
+                $retorno['erro']     = $dadosRecebidos->metodo . ': ' . $exception->getMessage();
+                $retorno['mensagem'] = $exception->getMessage();
+            }
         }
+        $retorno['data'] = date("Y-m-d H:i:s");
+        
 
         echo json_encode($retorno);
     }
@@ -50,12 +75,69 @@ class Usuario extends CI_Controller {
         if (empty($usuario)) {
             throw new Exception("Não é possível formatar o usuário");
         }
-
         //$usuario->imagem = $this->ListarImagem($dadosRecebidos);
-
         $usuario->senha = '*************';
         
         return $usuario;
+    }
+
+    private function ValidarEmail($email) {
+        $this->db->select('*');
+        $this->db->where("email", $email);
+        $retornoDb = $this->db->get("usuario")->row(0);
+
+        if (!empty($retornoDb)) {
+            throw new Exception("Já existe um usuario com esse email cadastrado");
+        }
+        return true;
+    }
+
+    private function ValidarUsuario($nomeUsuario) {
+        $this->db->select('*');
+        $this->db->where("nome_usuario", $nomeUsuario);
+        $retornoDb = $this->db->get('usuario')->row(0);
+
+        if (!empty($retornoDb)) {
+            throw new Exception("O nome de usuário já está cadastrado");
+        }
+
+        return true;
+    }
+
+    private function Cadastrar($dadosRecebidos) {
+        if (empty($dadosRecebidos)) {
+            throw new Exception("Dados não recebidos");
+        }
+
+        $this->ValidarEmail($dadosRecebidos->dados->email);
+        $this->ValidarUsuario($dadosRecebidos->dados->nomeUsuario);
+
+        $this->db->set("nome_completo", $dadosRecebidos->dados->nomeCompleto);
+        $this->db->set("email", trim(strtolower($dadosRecebidos->dados->email)));
+        $this->db->set("senha", md5(trim($dadosRecebidos->dados->senha)));
+        $this->db->set("nome_usuario", trim($dadosRecebidos->dados->nomeUsuario));
+
+        $this->db->set("dt_cadastro", date("Y-m-d H:m:s"));
+        $this->db->insert("usuario");
+
+        $idUsuario = $this->db->insert_id();
+        $retorno = [];
+        if (empty($idUsuario)) {
+            throw new Exception("Ocorreu um erro ao cadastrar o usuario");
+        }
+
+        if($this->db->affected_rows() > 0 ){
+            $retorno['sucesso'] = true;
+            $dadosRecebidos->dados->idUsuario = $idUsuario;
+            $retorno['item'] = $this->FormatarUsuario($dadosRecebidos->dados);
+            $retorno['mensagem'] = "Usuario cadastrado com sucesso";
+        } else {
+            $retorno['sucesso'] = false;
+            $retorno['mensagem'] = "Não foi possível cadastrar o usuario";
+        }
+
+        return $retorno;
+
     }
 
     private function ResolverHttp() {
