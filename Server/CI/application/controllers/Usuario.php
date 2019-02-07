@@ -37,7 +37,7 @@ class Usuario extends CI_Controller {
             $retorno['mensagem'] = "Não há um usuário cadastrado com esse nome, faça já o seu cadastro";
         } else {
             $retorno['sucesso']=true;
-            $retorno['item'] = $retornoDb;
+            $retorno['item'] = $this->FormatarUsuario($retornoDb);
             $retorno['mensagem'] = "Usuario logado com sucesso!";
         }
 
@@ -45,6 +45,18 @@ class Usuario extends CI_Controller {
         return $retorno;
     }
 
+
+    private function FormatarUsuario($usuario) {
+        if (empty($usuario)) {
+            throw new Exception("Não é possível formatar o usuário");
+        }
+
+        //$usuario->imagem = $this->ListarImagem($dadosRecebidos);
+
+        $usuario->senha = '*************';
+        
+        return $usuario;
+    }
 
     private function ResolverHttp() {
         if (isset($_SERVER['HTTP_ORIGIN'])) {
