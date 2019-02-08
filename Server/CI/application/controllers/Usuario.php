@@ -59,7 +59,7 @@ class Usuario extends CI_Controller {
 
         if(empty($retornoDb)) {
             $retorno['sucesso'] = false;
-            $retorno['mensagem'] = "Não há um usuário cadastrado com esse nome, faça já o seu cadastro";
+            $retorno['mensagem'] = "Usuário ou senha incorretos.";
         } else {
             $retorno['sucesso']=true;
             $retorno['item'] = $this->FormatarUsuario($retornoDb);

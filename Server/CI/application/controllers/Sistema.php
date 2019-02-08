@@ -32,6 +32,9 @@ class Sistema extends CI_Controller {
                         case 'ListarFichas':
                         $retorno = $this->ListarFichas($dadosRecebidos);
                         break;
+                        case 'ListarHabilidades':
+                        $retorno = $this->ListarHabilidades($dadosRecebidos);
+                        break;
                         
                         default:
                             $retorno['sucesso']  = false;
@@ -127,5 +130,44 @@ class Sistema extends CI_Controller {
         } else {
             return '{}';
         }
+    }
+
+    private function ListarHabilidades($dadosRecebidos) {
+        if (empty($dadosRecebidos)) {
+            throw new Exception("Dados não recebidos");
+        }
+
+        switch ($dadosRecebidos->dados->idSistema) {
+            case 1:
+            return $this->ListarGot($dadosRecebidos);
+            break;
+
+            default:
+            throw new Exception("Esse sistema não está cadastrado no nosso banco de dados");
+            break;
+        } 
+    }
+
+
+    private function ListarGot($dadosRecebidos) {
+        if ($dadosRecebidos->dados->idSistema != 1) {
+            throw new Exception("Sistema errado!");
+        }
+
+        $this->db->select('*');
+        $this->db->where('id_sistema', $dadosRecebidos->dados->idSistema);
+        $this->db->order_by('nome', 'ASC');
+        $retornoDb = $this->db->get("core_ficha_habilidades_got")->result();
+        $retorno = [];
+        if (empty($retornoDb)) {
+            $retorno['mensagem'] = "Nenhuma habilidade encontrada";
+            $retorno['sucesso'] = false;
+        } else {
+            $retorno['item'] = $retornoDb;
+            $retorno['sucesso'] = true;
+        }
+
+        return $retorno;
+
     }
 }
