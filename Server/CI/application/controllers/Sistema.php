@@ -35,6 +35,9 @@ class Sistema extends CI_Controller {
                         case 'ListarHabilidades':
                         $retorno = $this->ListarHabilidades($dadosRecebidos);
                         break;
+                        case 'ListarArmas':
+                        $retorno = $this->ListarArmas($dadosRecebidos);
+                        break;
                         
                         default:
                             $retorno['sucesso']  = false;
@@ -148,6 +151,22 @@ class Sistema extends CI_Controller {
         } 
     }
 
+    private function ListarArmas($dadosRecebidos) {
+        if (empty($dadosRecebidos)) {
+            throw new Exception("Dados não recebidos");
+        }
+
+        switch ($dadosRecebidos->dados->idSistema) {
+            case 1:
+            return $this->ListarArmasGot($dadosRecebidos);
+            break;
+
+            default:
+            throw new Exception("Esse sistema não está cadastrado no nosso banco de dados");
+            break;
+        } 
+    }
+
 
     private function ListarGot($dadosRecebidos) {
         if ($dadosRecebidos->dados->idSistema != 1) {
@@ -169,5 +188,26 @@ class Sistema extends CI_Controller {
 
         return $retorno;
 
+    }
+
+    private function ListarArmasGot($dadosRecebidos) {
+        if ($dadosRecebidos->dados->idSistema != 1) {
+            throw new Exception("Sistema errado!");
+        }
+
+        $this->db->select('*');
+        $this->db->order_by('especialidade', 'ASC');
+        $retornoDb = $this->db->get('core_got_armas')->result();
+
+        $retorno = [];
+        if (empty($retornoDb)) {
+            $retorno['mensagem'] = "Nenhuma arma encontrada";
+            $retorno['sucesso'] = false;
+        } else {
+            $retorno['item'] = $retornoDb;
+            $retorno['sucesso'] = true;
+        }
+
+        return $retorno;
     }
 }
