@@ -38,6 +38,12 @@ class Sistema extends CI_Controller {
                         case 'ListarArmas':
                         $retorno = $this->ListarArmas($dadosRecebidos);
                         break;
+                        case 'ListarArmaduras':
+                        $retorno = $this->ListarArmaduras($dadosRecebidos);
+                        break;
+                        case 'SalvarFicha':
+                        $retorno = $this->SalvarFicha($dadosRecebidos);
+                        break;
                         
                         default:
                             $retorno['sucesso']  = false;
@@ -167,6 +173,22 @@ class Sistema extends CI_Controller {
         } 
     }
 
+    private function ListarArmaduras($dadosRecebidos) {
+        if (empty($dadosRecebidos)) {
+            throw new Exception("Dados não recebidos");
+        }
+
+        switch ($dadosRecebidos->dados->idSistema) {
+            case 1:
+            return $this->ListarArmadurasGot($dadosRecebidos);
+            break;
+
+            default:
+            throw new Exception("Esse sistema não está cadastrado no nosso banco de dados");
+            break;
+        } 
+    }
+
 
     private function ListarGot($dadosRecebidos) {
         if ($dadosRecebidos->dados->idSistema != 1) {
@@ -209,5 +231,63 @@ class Sistema extends CI_Controller {
         }
 
         return $retorno;
+    }
+
+    private function ListarArmadurasGot($dadosRecebidos) {
+        if ($dadosRecebidos->dados->idSistema != 1) {
+            throw new Exception("Sistema errado!");
+        }
+
+        $this->db->select('*');
+        $this->db->order_by('nome', 'ASC');
+        $retornoDb = $this->db->get('core_got_armaduras')->result();
+
+        $retorno = [];
+        if (empty($retornoDb)) {
+            $retorno['mensagem'] = "Nenhuma armadura encontrada";
+            $retorno['sucesso'] = false;
+        } else {
+            $retorno['item'] = $retornoDb;
+            $retorno['sucesso'] = true;
+        }
+
+        return $retorno;
+    }
+
+    private function SalvarFicha($dadosRecebidos) {
+        if (empty($dadosRecebidos->dados)) {
+            throw new Exception("Dados não recebidos");
+        }
+
+        if (empty($dadosRecebidos->dados->idSistema)) {
+            throw new Exception("Id do sistema está vazio");
+        }
+
+        if (empty($dadosRecebidos->dados->ficha)) {
+            throw new Exception("Ficha está vazia");
+        }
+
+        if (empty($dadosRecebidos->logado->id_usuario)){
+            throw new Exception("Id do usuário não recebido");
+        }
+
+        $this->db->set('id_usuario', $dadosRecebidos->logado->id_usuario);
+        $this->db->set('id_core_sistema', $dadosRecebidos->dados->idSistema);
+        $this->db->set('ficha', json_encode($dadosRecebidos->dados->ficha));
+
+        $this->db->set('dt_cadastro', date('Y-m-d H:i:s'));
+        $this->db->insert('ficha');
+
+        $retorno = [];
+        if ($this->db->affected_rows() > 0 ) {
+            $retorno['sucesso'] = true;
+            $retorno['mensagem']= 'Ficha cadastrada com sucesso';
+        } else {
+            $retorno['sucesso'] = false;
+            $retorno['mensagem']= 'Ficha não pode ser cadastrada';
+        }
+
+        return $retorno;
+
     }
 }
