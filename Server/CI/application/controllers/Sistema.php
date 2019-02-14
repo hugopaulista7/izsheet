@@ -2,6 +2,7 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Sistema extends CI_Controller {
+    private const ID_ATIVO = 1;
     function __construct() {
         parent::__construct();
         
@@ -93,6 +94,7 @@ class Sistema extends CI_Controller {
         $this->db->select('*');
         $this->db->where("id_usuario", $dadosRecebidos->logado->id_usuario);
         $this->db->where("id_core_sistema", $dadosRecebidos->dados->idSistema);
+        $this->db->where("id_core_status", self::ID_ATIVO);
         $retornoDb = $this->db->get("ficha")->result();
 
         $retorno = [];
