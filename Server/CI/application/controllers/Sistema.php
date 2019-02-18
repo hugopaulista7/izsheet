@@ -2,6 +2,8 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Sistema extends CI_Controller {
+    private const ID_ATIVO = 1;
+    private const ID_EXCLUIDO = 2;
     function __construct() {
         parent::__construct();
         
@@ -43,6 +45,12 @@ class Sistema extends CI_Controller {
                         break;
                         case 'SalvarFicha':
                         $retorno = $this->SalvarFicha($dadosRecebidos);
+                        break;
+                        case 'DetalharFicha':
+                        $retorno = $this->DetalharFicha($dadosRecebidos);
+                        break;
+                        case 'ExcluirFicha':
+                        $retorno = $this->ExcluirFicha($dadosRecebidos);
                         break;
                         
                         default:
@@ -93,6 +101,7 @@ class Sistema extends CI_Controller {
         $this->db->select('*');
         $this->db->where("id_usuario", $dadosRecebidos->logado->id_usuario);
         $this->db->where("id_core_sistema", $dadosRecebidos->dados->idSistema);
+        $this->db->where("id_core_status", self::ID_ATIVO);
         $retornoDb = $this->db->get("ficha")->result();
 
         $retorno = [];
@@ -289,5 +298,54 @@ class Sistema extends CI_Controller {
 
         return $retorno;
 
+    }
+
+    public function DetalharFicha($dadosRecebidos) {
+        if (empty($dadosRecebidos->dados)) {
+            throw new Exception("Dados não recebidos");
+        }
+        if (empty($dadosRecebidos->dados->idFicha)) {
+            throw new Exception("Ficha não encontrada.(1)");
+        }
+
+        $this->db->select('*');
+        $this->db->where('id_ficha', $dadosRecebidos->dados->idFicha);
+        $this->db->where('id_core_status', self::ID_ATIVO);
+        $retornoDb = $this->db->get('ficha')->row(0);
+        $retorno = [];
+        if (empty($retornoDb)) {
+            $retorno['sucesso'] = false;
+            $retorno['mensagem'] = "Ficha não encontrada.(0)";
+        } else {
+            $retorno['sucesso'] = true;
+            $retorno['item'] = $retornoDb;
+        }
+
+        return $retorno;
+
+    }
+
+    public function ExcluirFicha($dadosRecebidos) {
+        if (empty($dadosRecebidos->dados->idFicha)) {
+            throw new Exception("id da ficha não recebido");
+        }
+
+        $this->db->select('*');
+        $this->db->where('id_ficha', $dadosRecebidos->dados->idFicha);
+        $this->db->where('id_core_status', self::ID_ATIVO);
+        $this->db->set('id_core_status', self::ID_EXCLUIDO);
+
+        $this->db->update("ficha");
+
+        $retorno = [];
+        if ($this->db->affected_rows() > 0 ) {
+            $retorno['mensagem'] = "Ficha excluída com sucesso";
+            $retorno['sucesso'] = true;
+        } else {
+            $retorno['mensagem'] = "Ficha não encontrada ou já excluída";
+            $retorno['sucesso'] = false;
+        }
+
+        return $retorno;
     }
 }
