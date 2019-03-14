@@ -1,0 +1,245 @@
+<ion-list>
+  <ion-list-header>
+    <ion-title style="font-size:100%" color="primary"><strong>Ficha RPG As Crônicas do Gelo e Fogo</strong></ion-title>
+  </ion-list-header>
+
+  <!-- PERSONAGEM -->
+  <ion-item>
+    <ion-label position="floating">Nome de personagem</ion-label>
+    <ion-input type="text" placeholder="Nome do personagem" [(ngModel)]="nomePersonagem"></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-label position="floating">Idade</ion-label>
+    <ion-input type="number" placeholder="Idade do personagem" [(ngModel)]="idade"></ion-input>
+  </ion-item>
+  <ion-item>
+      <ion-label>Genero</ion-label>
+      <ion-select placeholder="Selecione Um" [(ngModel)]="genero">
+        <ion-select-option value="f">Feminino</ion-select-option>
+        <ion-select-option value="m">Masculino</ion-select-option>
+      </ion-select>
+  </ion-item>
+  <ion-item>
+      <ion-label position="floating">Casa</ion-label>
+      <ion-input type="text" placeholder="Casa" [(ngModel)]="casa"></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-label position="floating">Pontos de destino</ion-label>
+    <ion-input type="number" placeholder={{ptsDestino}} [(ngModel)]="ptsDestino"></ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-label position="floating">Qualidades e Defeitos</ion-label>
+    <ion-input type="text" placeholder="Qualidades e defeitos" [(ngModel)]="qualidadesDefeitos"></ion-input>
+  </ion-item>
+  <!-- FIMPERSONAGEM -->
+
+  <!-- HABILIDADES -->
+  <ion-button icon-end color="secondary" expand="block" (click)="VerHabilidades()">Habilidades
+    <ion-icon name="arrow-dropdown" [hidden]="verHabilidades">
+    </ion-icon>
+    <ion-icon name="arrow-dropup" [hidden]="!verHabilidades"></ion-icon>
+  </ion-button>
+  
+  <ion-grid [hidden]="!verHabilidades">
+    <ion-row>
+      <ion-col align-self-end>
+        Habilidades
+      </ion-col>
+    </ion-row>
+    <ion-row *ngFor="let item of habilidades">
+      <div>
+        <ion-grid>
+          <ion-row>
+            <ion-col size="2">
+              <ion-label position="floating">
+                Nível
+              </ion-label>
+            </ion-col>
+            <ion-col size="4">
+              <ion-label position="floating">
+                Habilidade
+              </ion-label>
+            </ion-col>
+            <ion-col>
+              <ion-label position="floating">
+                Especialidades
+              </ion-label>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col size="2" style="bottom: 15px;">
+              <ion-input type="number" placeholder="{{item.nivel}}" (input)=" $event.inputType == 'insertText' ? item.nivel = $event.data : null; CalcularAtributos($event);"></ion-input>
+            </ion-col>
+            <ion-col size="4">
+              <ion-label color="tertiary">
+                {{item.nome}}
+              </ion-label>
+            </ion-col>
+            <ion-col style="bottom: 15px;">
+              <ion-input type="text" class="input-especialidade" padding placeholder={{item.especializacoes}} (input)="$event.inputType == 'insertText' ? item.nivel = $event.data : null;"></ion-input>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </div>
+    </ion-row>
+  </ion-grid>
+  <!-- FIMHABILIDADES -->
+
+  <!-- INTRIGA -->
+  <ion-button icon-end color="secondary" expand="block" (click)="VerIntriga()">Intriga
+      <ion-icon name="arrow-dropdown" [hidden]="verIntriga">
+      </ion-icon>
+      <ion-icon name="arrow-dropup" [hidden]="!verIntriga"></ion-icon>
+  </ion-button>
+
+  <ion-grid [hidden]="!verIntriga">
+    <ion-row>
+      <ion-col size="7">
+        <ion-item>
+          <ion-label position="floating">Defesa em Intriga</ion-label>
+          <ion-input type="number" placeholder="{{defIntriga}}" readonly></ion-input>
+        </ion-item>
+      </ion-col>
+      <ion-col size="5">
+        <ion-item>
+          <ion-label position="floating">Compostura</ion-label>
+          <ion-input type="number" placeholder="{{compostura}}" readonly></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size="7">
+        <ion-item>
+          <ion-label position="floating">Vitorias</ion-label>
+          <ion-input type='number' placeholder="{{vitorias}}" (input)=" $event.inputType == 'insertText' ? vitorias = $event.data : null;"></ion-input>
+        </ion-item>
+      </ion-col>
+      <ion-col size="5">
+        <ion-item>
+          <ion-label position="floating">
+            Frustrações
+          </ion-label>
+          <ion-input type="number" placeholder="{{frustracoes}}" name="frustracoes" (input)=" $event.inputType == 'insertText' ? frustracoes = $event.data : null;"></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <!-- FIMINTRIGA -->
+  
+
+  <!-- COMBATE -->
+  <ion-button icon-end color="secondary" expand="block" (click)="VerCombate()">
+    Combate
+    <ion-icon name="arrow-dropdown" [hidden]="verCombate">
+    </ion-icon>
+    <ion-icon name="arrow-dropup" [hidden]="!verCombate"></ion-icon>
+  </ion-button>
+  <ion-grid [hidden]="!verCombate">
+    <ion-row>
+      <ion-col size="7">
+        <ion-item>
+          <ion-label position="floating">Defesa em Combate</ion-label>
+          <ion-input type="number" placeholder="{{defCombate}}" readonly></ion-input>
+        </ion-item>
+      </ion-col>
+      <ion-col size="5">
+        <ion-item>
+          <ion-label position="floating">Saúde</ion-label>
+          <ion-input type="number" placeholder="{{saude}}" readonly></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size="7">
+        <ion-item>
+          <ion-label position="floating">Ferimentos</ion-label>
+          <ion-input type='number' placeholder="{{ferimentos}}" (input)=" $event.inputType == 'insertText' ? ferimentos = $event.data : null;"></ion-input>
+        </ion-item>
+      </ion-col>
+      <ion-col size="5">
+        <ion-item>
+          <ion-label position="floating">
+            Lesões
+          </ion-label>
+          <ion-input type="number" placeholder="{{lesoes}}" name="lesos" (input)=" $event.inputType == 'insertText' ? lesoes = $event.data : null;"></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <!-- FIMCOMBATE -->
+
+  <!-- ARMAS -->
+  <ion-button expand="block"  (click)="VerArma()" color="secondary">Armas
+    <ion-icon name="arrow-dropdown" [hidden]="verArmas"> </ion-icon>
+    <ion-icon name="arrow-dropup" [hidden]="!verArmas"></ion-icon>
+  </ion-button>
+  <ion-list [hidden]="!verArmas"> 
+    <ion-list-header>
+      <ion-title color="primary">Armas</ion-title>
+    </ion-list-header>
+    
+    <ion-select placeholder="Armas" [(ngModel)]="armaEscolhida" interface="action-sheet" (ngModelChange)="AdicionarArma(armaEscolhida)"> 
+      <ion-select-option *ngFor="let armaItem of armas" [value]=armaItem>
+        {{armaItem.nome}}
+        || <br>{{armaItem.especialidade}}
+      </ion-select-option>
+    </ion-select>
+
+    <ion-item *ngFor="let arma of armasEscolhidas">
+      <ion-label>
+        {{arma.nome}}
+      </ion-label>
+      <ion-buttons item-end>
+        <ion-button color="danger" (click)="RemoverArma(arma)">
+            <ion-icon name="trash"></ion-icon>
+        </ion-button>
+        <ion-button color="success" (click)="MostrarArma(arma)">
+          <ion-icon name="information-circle"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+      </ion-item>    
+  </ion-list>
+  <!-- FIMARMAS -->
+
+  <!-- ARMADURAS -->
+  <ion-button expand="block" (click)="VerArmadura()" color="secondary">
+    Armaduras
+    <ion-icon name="arrow-dropdown" [hidden]="verArmaduras"> </ion-icon>
+    <ion-icon name="arrow-dropup" [hidden]="!verArmaduras"></ion-icon>
+  </ion-button>
+  <ion-list [hidden]="!verArmaduras">
+    <ion-list-header>
+      <ion-title color="primary">Armaduras</ion-title>
+    </ion-list-header>
+
+    <ion-select placeholder="Armaduras" [(ngModel)]="armaduraEscolhida" interface="action-sheet"> 
+        <ion-select-option *ngFor="let armaduraItem of armaduras" [value]=armaduraItem>
+          {{armaduraItem.nome}}
+          || <br>{{armaduraItem.valor}}
+        </ion-select-option>
+    </ion-select>
+    <ion-card [hidden]="!armaduraEscolhida">
+      <ion-card-header>
+        <ion-card-title color="primary">
+          {{armaduraEscolhida.nome}}
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-label color="secondary">
+          Valor: <strong>{{armaduraEscolhida.valor}}</strong>
+        </ion-label>
+        <ion-label color="secondary">
+          Penalidade: <strong>{{armaduraEscolhida.penalidade}}</strong>
+        </ion-label>
+      </ion-card-content>
+    </ion-card>
+  </ion-list>
+  <!-- FIMARMADURAS -->
+
+  <ion-textarea placeholder="Anotações gerais" [(ngModel)]="outros" type="text"></ion-textarea>
+</ion-list>
+
+<ion-button (click)="SalvarFicha()" expand="block" color="light">
+  Salvar
+</ion-button>

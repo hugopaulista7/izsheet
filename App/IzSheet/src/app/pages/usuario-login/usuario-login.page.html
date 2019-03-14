@@ -1,0 +1,61 @@
+<ion-header>
+  <ion-toolbar>
+      <ion-title style="color: #faebd7;" slot="start" [hidden]="tipoPagina == 'cadastro'">
+        <strong>Faça seu login!</strong>
+      </ion-title>
+      <ion-title style="color: #faebd7;" slot="start" [hidden]="tipoPagina == 'login'">
+          <strong>Faça seu cadastro!</strong>
+      </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content padding>
+  <div [hidden]="tipoPagina == 'cadastro'">
+    <form [formGroup]="login" style="margin-top: 40%;">
+      <ion-item>
+        <ion-label position="floating" small>Nome de usuario:</ion-label>
+        <ion-input required type="text" formControlName="nomeUsuario" placeholder="nomeUsuarioApelido" pattern="[a-zA-Z ]*"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating" small>Senha:</ion-label>
+        <ion-input required placeholder="Senha" type="password" formControlName="senha"></ion-input>
+      </ion-item>
+    </form>
+    <ion-button type="submit" [disabled]="!login.valid" color="primary" expand="block" (click)="Login()">Login</ion-button>
+    <ion-button color="tertiary" expand="block" (click)="Cadastro()">Cadastrar</ion-button>
+  </div>
+
+  <div [hidden]="tipoPagina == 'login'">
+    
+
+    <form [formGroup]="cadastro">
+      <ion-item>
+        <ion-label position="floating" small>Nome completo:</ion-label>
+        <ion-input required type="text" formControlName="nomeCompleto" placeholder="Nome completo" pattern="[a-zA-Z ]*"></ion-input>
+      </ion-item>
+      
+      <ion-item>
+        <ion-label position="floating" small>Email:</ion-label>
+        <ion-input required type="email" formControlName="email" placeholder="email@email.com"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="floating" small>Senha:</ion-label>
+        <ion-input required type="password" formControlName="senha" placeholder="*********"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="floating" small>Confirmar senha:</ion-label>
+        <ion-input required type="password" formControlName="confirmarSenha" placeholder="*********"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="floating" small>Nome de usuario:</ion-label>
+        <ion-input required type="text" formControlName="nomeUsuario" placeholder="nomeUsuarioApelido" pattern="[a-zA-Z ]*"></ion-input>
+      </ion-item>
+      
+    </form>
+    <ion-button type="submit" [disabled]="cadastro.invalid" color="primary" expand="block" (click)="Cadastrar()">Cadastrar</ion-button>
+    <ion-button color="tertiary" expand="block" (click)="Cadastro()">Login</ion-button>
+  </div>
+
+</ion-content>

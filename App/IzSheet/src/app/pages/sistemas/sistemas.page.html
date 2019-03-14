@@ -1,0 +1,23 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-menu-button color="primary"></ion-menu-button>
+  </ion-toolbar>
+</ion-header>
+
+  <ion-content padding>
+    <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+      <ion-refresher-content></ion-refresher-content>
+    </ion-refresher>
+    <P>Sistemas disponíveis</P>
+    
+    <ion-list>
+   <ion-card *ngFor="let item of listaSistemas" (click)="ListarFicha(item.id_core_sistema)">
+     <ion-card-header>
+       <ion-card-title>{{item.nome}}</ion-card-title>
+     </ion-card-header>
+     <ion-card-content>
+       <img [src]="item.imagem" [alt]="item.descricao">
+     </ion-card-content>
+   </ion-card> 
+  </ion-list>
+</ion-content>
