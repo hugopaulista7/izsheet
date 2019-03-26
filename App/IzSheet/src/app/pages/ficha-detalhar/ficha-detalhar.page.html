@@ -1,0 +1,11 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button> 
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <app-detalhar-ficha-got *ngIf="idSistema == 1" [ficha]="fichaServer"></app-detalhar-ficha-got>
+</ion-content>

@@ -1,0 +1,24 @@
+<ion-app>
+  <ion-split-pane>
+    <ion-menu menuId="menuInicial">
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>Menu</ion-title>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content>
+        <ion-list>
+          <ion-menu-toggle auto-hide="false" *ngFor="let p of appPages">
+            <ion-item [routerLink]="[p.pagina]">
+              <ion-icon slot="start" [name]="p.icone"></ion-icon>
+              <ion-label>
+                {{p.titulo}}
+              </ion-label>
+            </ion-item>
+          </ion-menu-toggle>
+        </ion-list>
+      </ion-content>
+    </ion-menu>
+    <ion-router-outlet main></ion-router-outlet>
+  </ion-split-pane>
+</ion-app>
